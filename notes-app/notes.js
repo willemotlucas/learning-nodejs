@@ -42,7 +42,7 @@ var removeNote = (title) => {
 	var filteredNotes = notes.filter((note) => note.title !== title);
 
 	if(notes.length !== filteredNotes.length){
-		saveNotes();
+		saveNotes(filteredNotes);
 		return true;
 	} else {
 		return false;
