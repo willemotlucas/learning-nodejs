@@ -4,7 +4,7 @@ const mongoose = require('mongoose');
 const Bear = require('./app/models/bear');
 
 // Connection to database
-mongoose.connect('mongodb://node:node@novus.modulusmongo.net:27017/Iganiq8o');
+mongoose.connect('mongodb://localhost:27017/test-bears');
 
 const app = express();
 
@@ -45,6 +45,53 @@ router.route('/bears')
 
 			res.json({message: 'Bear was created!'});
 		});
+	})
+
+	.get((req, res) => {
+		Bear.find((err, bears) => {
+			if(err)
+				res.send(err);
+
+			res.json(bears);
+		});
+	});
+
+router.route('/bears/:bear_id')
+
+	.get((req, res) => {
+		Bear.findById(req.params.bear_id, (err, bear) => {
+			if(err)
+				res.send(err);
+
+			res.json(bear);
+		});
+	})
+
+	.put((req, res) => {
+		Bear.findById(req.params.bear_id, (err, bear) => {
+			if(err)
+				res.send(err);
+
+			bear.name = req.body.name;
+
+			bear.save(err => {
+				if(err)
+					res.send(err);
+
+				res.json({message: 'Bear updated!'});
+			});
+		});
+	})
+
+	.delete((req, res) => {
+		Bear.remove({
+			_id: req.params.bear_id
+		}, (err, bear) => {
+			if(err)
+				res.send(err);
+
+			res.json({message: 'Bear deleted!'});
+		})
 	});
 
 // ========= REGISTER ROUTES =============
