@@ -15,7 +15,7 @@ var Geocode = {
 			} else if(body.status === 'OK') {
 				callback(undefined, {
 					address: body.results[0].formatted_address,
-					latitute: body.results[0].geometry.location.lat,
+					latitude: body.results[0].geometry.location.lat,
 					longitude: body.results[0].geometry.location.lng
 				});
 			}
