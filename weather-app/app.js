@@ -15,18 +15,12 @@ const argv = yargs
 	.alias('help', 'h')
 	.argv;
 
-geocode.geocodeAddress(argv.address, (errorMessage, results) => {
-	if(errorMessage){
-		console.log(errorMessage);
-	} else {
-		console.log(results.address);
-		weather.fetchWeather(results.latitude, results.longitude, (errorMessage, weatherResults) => {
-			if(errorMessage) {
-				console.log(errorMessage);
-			} else {
-				console.log(`It's ${weatherResults.temperature} degrees but it feels like ${weatherResults.apparentTemperature}`);
-			}
-		})
-	}
+geocode.geocodeAddress(argv.address).then((location) => {
+	console.log(location.address);
+	return weather.fetchWeather(location.latitude, location.longitude);
+}).then((weather) => {
+	console.log(`It's ${weather.temperature}° but it feels like ${weather.apparentTemperature}°`);
+}).catch((errorMessage) => {
+	console.log(errorMessage);
 });
 
