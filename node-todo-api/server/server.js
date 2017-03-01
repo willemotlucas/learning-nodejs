@@ -6,6 +6,8 @@ var { mongoose } = require('./db/mongoose');
 var { Todo } = require('./models/todo');
 var { User } = require('./models/user');
 
+const PORT = process.env.PORT || 3000;
+
 var app = express();
 
 app.use(bodyParser.json());
@@ -35,7 +37,7 @@ app.get('/todos/:id', (req, res) => {
 		return res.status(404).send();
 	}
 
-	Todo.findById({_id: req.params.id}).then((todo) => {
+	Todo.findById(req.params.id).then((todo) => {
 		if(!todo)
 			return res.status(404).send();
 
@@ -43,8 +45,21 @@ app.get('/todos/:id', (req, res) => {
 	}).catch((err) => res.status(400).send());
 });
 
-app.listen(3000, () => {
-	console.log('API is up');
+app.delete('/todos/:id', (req, res) => {
+	if(!ObjectID.isValid(req.params.id)){
+		return res.status(404).send();
+	}
+
+	Todo.findByIdAndRemove(req.params.id).then((todo) => {
+		if(!todo)
+			return res.status(404).send();
+
+		res.send({todo});
+	}).catch((err) => res.status(400).send());
+});
+
+app.listen(PORT, () => {
+	console.log(`API is up on port ${PORT}`);
 });
 
 module.exports = { app };
